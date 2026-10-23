@@ -1,0 +1,23 @@
+{% set position = config('MgdBarrierefrei.config.position') == 'right' ? 'right' : 'left' %}
+{% set label = config('MgdBarrierefrei.config.buttonLabel')|default('Barrierefreiheit') %}
+{% set accent = config('MgdBarrierefrei.config.accentColor')|default('#b91c1c') %}
+<div class="mgd-a11y" data-mgd-a11y data-position="{{ position }}" style="--mgd-a11y-accent: {{ accent|e('html_attr') }}">
+    <button class="mgd-a11y__trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="mgd-a11y-dialog">
+        <span aria-hidden="true">♿</span><span>{{ label|e }}</span>
+    </button>
+    <section class="mgd-a11y__dialog" id="mgd-a11y-dialog" role="dialog" aria-modal="true" aria-label="{{ label|e('html_attr') }}" hidden tabindex="-1">
+        <header class="mgd-a11y__header"><h2>{{ label|e }}</h2><button type="button" class="mgd-a11y__close" aria-label="Schließen">×</button></header>
+        <p>Darstellung nur für dieses Gerät anpassen.</p>
+        <div class="mgd-a11y__actions">
+            <button type="button" data-mgd-a11y-action="contrast">Kontrast</button>
+            <button type="button" data-mgd-a11y-action="gray">Graustufen</button>
+            <button type="button" data-mgd-a11y-action="focus">Fokus</button>
+            <button type="button" data-mgd-a11y-action="font-up">Schrift +</button>
+            <button type="button" data-mgd-a11y-action="font-down">Schrift −</button>
+            <button type="button" data-mgd-a11y-action="motion">Bewegung stoppen</button>
+            <button type="button" data-mgd-a11y-action="reset">Zurücksetzen</button>
+        </div>
+        <p class="mgd-a11y__statement"><a href="{{ path('frontend.mgd_barrierefrei.statement') }}">Erklärung zur Barrierefreiheit</a></p>
+        <p class="mgd-a11y__credit"><a href="https://michael-gahn.de" target="_blank" rel="noopener noreferrer">Michael-Gahn.de</a></p>
+    </section>
+</div>

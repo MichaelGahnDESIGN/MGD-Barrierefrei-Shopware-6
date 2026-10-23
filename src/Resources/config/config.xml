@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Bedienhilfe</title>
+        <input-field type="bool">
+            <name>enabled</name><defaultValue>true</defaultValue>
+            <label>Bedienhilfe anzeigen</label>
+            <label lang="en-GB">Show accessibility tools</label>
+            <helpText>Öffnet ein lokales Bedienpanel mit Kontrast, Schriftgröße, Fokus und reduzierter Bewegung.</helpText>
+        </input-field>
+        <input-field type="single-select">
+            <name>position</name><defaultValue>left</defaultValue>
+            <label>Position der Schaltfläche</label>
+            <options>
+                <option><id>left</id><name>Unten links</name></option>
+                <option><id>right</id><name>Unten rechts</name></option>
+            </options>
+        </input-field>
+        <input-field type="text">
+            <name>buttonLabel</name><defaultValue>Barrierefreiheit</defaultValue>
+            <label>Beschriftung der Schaltfläche</label>
+        </input-field>
+        <input-field type="text">
+            <name>accentColor</name><defaultValue>#b91c1c</defaultValue>
+            <label>Akzentfarbe als Hex-Wert</label>
+            <helpText>Beispiel: #b91c1c. Vor Veröffentlichung bitte Kontrast prüfen.</helpText>
+        </input-field>
+    </card>
+    <card>
+        <title>Erklärung zur Barrierefreiheit</title>
+        <input-field type="text"><name>organisation</name><label>Name des Unternehmens</label><required>true</required></input-field>
+        <input-field type="text"><name>websiteUrl</name><label>Webadresse</label><placeholder>https://www.beispiel.de</placeholder></input-field>
+        <input-field type="text"><name>responsibleName</name><label>Verantwortliche Person oder Stelle</label></input-field>
+        <input-field type="text"><name>responsibleRole</name><label>Funktion</label></input-field>
+        <input-field type="text"><name>contactEmail</name><label>Kontakt-E-Mail</label></input-field>
+        <input-field type="text"><name>contactPhone</name><label>Telefon</label></input-field>
+        <input-field type="single-select">
+            <name>statementStatus</name><defaultValue>teilweise</defaultValue>
+            <label>Eigene Einschätzung des Stands</label>
+            <options>
+                <option><id>teilweise</id><name>Teilweise barrierefrei</name></option>
+                <option><id>vollstaendig</id><name>Vollständig barrierefrei</name></option>
+                <option><id>nicht</id><name>Noch nicht vollständig barrierefrei</name></option>
+            </options>
+        </input-field>
+        <input-field type="textarea"><name>knownBarriers</name><label>Bekannte Barrieren oder Ausnahmen</label><helpText>Freie Angabe; vor Veröffentlichung fachlich und rechtlich prüfen.</helpText></input-field>
+        <input-field type="text"><name>statementDate</name><label>Stand der Erklärung</label><placeholder>2026-10-23</placeholder></input-field>
+    </card>
+</config>

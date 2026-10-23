@@ -1,0 +1,8 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_body_inner %}
+    {{ parent() }}
+    {% if config('MgdBarrierefrei.config.enabled') %}
+        {% sw_include '@MgdBarrierefrei/storefront/layout/accessibility-panel.html.twig' %}
+    {% endif %}
+{% endblock %}

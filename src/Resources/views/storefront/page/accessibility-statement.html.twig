@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_content %}
+    <main class="container-main mgd-a11y-statement" id="main-content">
+        <h1>Erklärung zur Barrierefreiheit</h1>
+        <p>Diese Erklärung zur Barrierefreiheit gilt für <strong>{{ statement.organisation|e }}</strong>{% if statement.website %} ({{ statement.website|e }}){% endif %}. Stand: {{ statement.updatedAt|e }}.</p>
+        <h2>Stand der Vereinbarkeit mit den Anforderungen</h2>
+        <p>Diese Website ist nach eigener Einschätzung {{ statement.status|e }}. Wir arbeiten daran, Inhalte und Funktionen verständlich und zugänglich zu gestalten.</p>
+        <h2>Nicht barrierefreie Inhalte</h2>
+        {% if statement.barriers %}<p>{{ statement.barriers|nl2br }}</p>{% else %}<p>Uns sind derzeit keine konkreten Barrieren bekannt. Diese Angabe muss vor der Veröffentlichung fachlich geprüft und bei Änderungen aktualisiert werden.</p>{% endif %}
+        <h2>Feedback und Kontakt</h2>
+        <p>Wenn dir Barrieren auffallen oder du Hilfe bei der Nutzung benötigst, wende dich bitte an{% if statement.responsible %} {{ statement.responsible|e }}{% endif %}{% if statement.role %} ({{ statement.role|e }}){% endif %}{% if statement.email %}: <a href="mailto:{{ statement.email|e('html_attr') }}">{{ statement.email|e }}</a>{% endif %}{% if statement.phone %}, Telefon {{ statement.phone|e }}{% endif %}.</p>
+        <p><strong>Hinweis:</strong> Dieser Text entsteht aus den Plugin-Einstellungen und ist keine Rechtsberatung. Angaben und rechtliche Anforderungen müssen vor der Veröffentlichung geprüft werden.</p>
+    </main>
+{% endblock %}

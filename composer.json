@@ -1,0 +1,30 @@
+{
+  "name": "michaelgahn-design/mgd-barrierefrei-shopware-6",
+  "description": "Barrierefreie Bedienhilfen und eine konfigurierbare Erklärung zur Barrierefreiheit für Shopware 6.",
+  "type": "shopware-platform-plugin",
+  "license": "GPL-2.0-or-later",
+  "version": "1.0.0",
+  "authors": [{"name": "Michael Gahn DESIGN", "homepage": "https://michael-gahn.de"}],
+  "require": {
+    "php": "^8.2",
+    "shopware/core": "~6.6.10 || ~6.7.0",
+    "shopware/storefront": "~6.6.10 || ~6.7.0"
+  },
+  "autoload": {"psr-4": {"MgdBarrierefrei\\": "src/"}},
+  "extra": {
+    "shopware-plugin-class": "MgdBarrierefrei\\MgdBarrierefrei",
+    "label": {"de-DE": "MGD Barrierefrei", "en-GB": "MGD Accessibility"},
+    "description": {
+      "de-DE": "Anpassbare Bedienhilfe und Erklärung zur Barrierefreiheit für Shopware 6.",
+      "en-GB": "Customizable accessibility tools and accessibility statement for Shopware 6."
+    },
+    "manufacturerLink": {"de-DE": "https://michael-gahn.de", "en-GB": "https://michael-gahn.de"},
+    "supportLink": {"de-DE": "https://github.com/MichaelGahnDESIGN/MGD-Barrierefrei-Shopware-6/security/policy", "en-GB": "https://github.com/MichaelGahnDESIGN/MGD-Barrierefrei-Shopware-6/security/policy"},
+    "plugin-icon": "src/Resources/config/plugin.svg"
+  },
+  "scripts": {
+    "check:php": ["composer validate --strict", "find src -name '*.php' -print0 | xargs -0 -n1 php -l"],
+    "build:release": "sh scripts/build-release.sh"
+  },
+  "config": {"platform": {"php": "8.2.0"}}
+}
