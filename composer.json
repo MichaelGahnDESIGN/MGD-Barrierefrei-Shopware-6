@@ -23,7 +23,7 @@
     "plugin-icon": "src/Resources/config/plugin.svg"
   },
   "scripts": {
-    "check:php": ["composer validate --strict", "find src -name '*.php' -print0 | xargs -0 -n1 php -l"],
+    "check:php": ["composer validate --strict", "find src -name '*.php' -print0 | xargs -0 -n1 php -l", "php tests/catalog-check.php"],
     "build:release": "sh scripts/build-release.sh"
   },
   "config": {"platform": {"php": "8.2.0"}}

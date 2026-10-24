@@ -21,8 +21,12 @@ jobs:
         run: |
           find src -name '*.php' -print0 | xargs -0 -n1 php -l
           php -r 'foreach (array_slice($argv, 1) as $file) { if (@simplexml_load_file($file) === false) { fwrite(STDERR, "Ungültiges XML: $file\n"); exit(1); } }' src/Resources/config/*.xml
+      - name: Katalog-Test
+        run: php tests/catalog-check.php
       - name: JavaScript-Syntax
-        run: node --check src/Resources/app/storefront/src/js/mgd-barrierefrei.js
+        run: |
+          node --check src/Resources/app/storefront/src/js/mgd-barrierefrei.js
+          node --check src/Resources/public/administration/js/mgd-barrierefrei.js
       - name: Release-Paket
         run: sh scripts/build-release.sh && unzip -t release/MgdBarrierefrei-1.0.0.zip
       - name: Geheimnisse prüfen
