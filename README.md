@@ -33,7 +33,7 @@ Unter **Einstellungen → Erweiterungen → MGD Weitere Plugins** zeigt das Plug
 - Der Button **Liste aktualisieren** lädt sie neu (höchstens einmal pro Minute).
 - Es wird nichts automatisch installiert. Du lädst das ZIP herunter und lädst es selbst unter **Erweiterungen → Meine Erweiterungen → Apps** hoch.
 - Ist der Katalog nicht erreichbar, steht dort nur ein Hinweis. Dein Shop ist nie betroffen.
-- Bilder und Symbole lädt dein Browser nur auf dieser Admin-Seite. Im Shop für Besucher gibt es keine Anfrage an theme.michael-gahn.de.
+- Der Katalog liefert derzeit keine Bilder. Falls er später welche liefert, lädt dein Browser sie nur auf dieser Admin-Seite (nur von theme.michael-gahn.de). Im Shop für Besucher gibt es keine Anfrage an theme.michael-gahn.de.
 - Admin-Endpunkt: `POST /api/_action/mgd-barrierefrei/catalog` (Berechtigung `system_config:read`).
 
 Mehr dazu im [Wiki: Weitere Plugins](docs/wiki/Weitere-Plugins.md).
