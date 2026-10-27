@@ -1,0 +1,23 @@
+{
+  "base": "/bundles/mgdbarrierefrei/administration/",
+  "entryPoints": {
+    "mgd-barrierefrei": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/mgdbarrierefrei/administration/js/mgd-barrierefrei.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

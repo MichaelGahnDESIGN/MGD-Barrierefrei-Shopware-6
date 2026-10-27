@@ -228,5 +228,12 @@ check(PluginCatalog::httpGet('http://theme.michael-gahn.de/api/catalog/plugins.j
 check(PluginCatalog::httpGet('https://theme.michael-gahn.de@evil.example/x') === null, 'httpGet: user@host abgelehnt');
 check(parse_url(PluginCatalog::FEED_URL, PHP_URL_HOST) === FeedNormalizer::HOST && str_starts_with(PluginCatalog::FEED_URL, 'https://'), 'Feed-URL: https + erlaubter Host');
 
+// Admin-Einstieg für Shopware 6.7 (Vite-Datei zeigt auf das fertige JS)
+$entryFile = __DIR__ . '/../src/Resources/public/administration/.vite/entrypoints.json';
+$entry = is_file($entryFile) ? json_decode((string) file_get_contents($entryFile), true) : null;
+$entryJs = $entry['entryPoints']['mgd-barrierefrei']['js'][0] ?? '';
+check(is_array($entry) && $entryJs === '/bundles/mgdbarrierefrei/administration/js/mgd-barrierefrei.js', '6.7 entrypoints.json: gültig + zeigt auf mgd-barrierefrei.js');
+check(is_file(__DIR__ . '/../src/Resources/public/administration/js/mgd-barrierefrei.js'), 'Admin-JS-Datei existiert');
+
 echo ($failed === 0 ? "OK" : "FEHLGESCHLAGEN") . ": $total Prüfungen, $failed Fehler\n";
 exit($failed === 0 ? 0 : 1);
