@@ -23,7 +23,7 @@ Kostenlose, lokal arbeitende Bedienhilfe mit einer konfigurierbaren Erklärung z
 4. Konfiguriere die Angaben unter **Erweiterungen → MGD Barrierefrei → Konfiguration**.
 5. Lege im Navigationsbereich einen Link auf `/barrierefreiheit` an.
 
-Jedes GitHub-Release enthält bereits das fertige Storefront-Paket. Ein manuelles Bauen der Administration ist nicht nötig. Der Admin-Endpunkt `POST /api/_action/mgd-barrierefrei/update/check` prüft ausschließlich die Release-Metadaten und erfordert die Shopware-Berechtigung `system_config:read`. Die Installation eines Updates wird weiterhin bewusst über Shopware ausgelöst. Vor einer Aktualisierung gehören Sicherung und Wartungsfenster zum Ablauf.
+Jedes GitHub-Release enthält das fertige Storefront-Paket (Ordner `src/Resources/app/storefront/dist`). Ein manuelles Bauen der Administration oder Storefront ist nicht nötig, du brauchst kein Node. Nach der Installation einmal **Einstellungen → System → Caches & Indizes → Cache leeren** (bzw. `bin/console theme:compile`), damit Shopware das Theme neu zusammenstellt. Der Admin-Endpunkt `POST /api/_action/mgd-barrierefrei/update/check` prüft ausschließlich die Release-Metadaten und erfordert die Shopware-Berechtigung `system_config:read`. Die Installation eines Updates wird weiterhin bewusst über Shopware ausgelöst. Vor einer Aktualisierung gehören Sicherung und Wartungsfenster zum Ablauf.
 
 ## Weitere Plugins (Admin-Seite)
 
@@ -49,8 +49,11 @@ composer validate --strict
 find src -name '*.php' -print0 | xargs -0 -n1 php -l
 php tests/catalog-check.php
 node --check src/Resources/public/administration/js/mgd-barrierefrei.js
+sh scripts/build-storefront.sh --check
 sh scripts/build-release.sh
 ```
+
+Änderst du das Storefront-JavaScript (`src/Resources/app/storefront/src/js`), danach `sh scripts/build-storefront.sh` ausführen und die geänderte `dist`-Datei mit committen. Das Release-Skript baut sie sowieso frisch, die CI schlägt bei veraltetem `dist` an.
 
 Das Paket hat genau einen Plugin-Ordner `MgdBarrierefrei/` als ZIP-Wurzel. Die SHA-256-Datei im Release dokumentiert das gebaute Paket.
 
