@@ -8,6 +8,21 @@
         <service id="MgdBarrierefrei\Administration\Controller\UpdateController" public="true">
             <argument type="service" id="MgdBarrierefrei\Update\GitHubReleaseChecker"/>
         </service>
+        <!-- Weitere Plugins: Feed von theme.michael-gahn.de, nur Admin -->
+        <service id="MgdBarrierefrei\Catalog\PsrCatalogCache">
+            <argument type="service" id="cache.object"/>
+        </service>
+        <service id="MgdBarrierefrei\Catalog\FeedNormalizer">
+            <argument type="collection"><argument>shopware</argument><argument>shopware6</argument></argument>
+            <argument>plugin-barrierefrei-shopware</argument>
+        </service>
+        <service id="MgdBarrierefrei\Catalog\PluginCatalog">
+            <argument type="service" id="MgdBarrierefrei\Catalog\PsrCatalogCache"/>
+            <argument type="service" id="MgdBarrierefrei\Catalog\FeedNormalizer"/>
+        </service>
+        <service id="MgdBarrierefrei\Administration\Controller\CatalogController" public="true">
+            <argument type="service" id="MgdBarrierefrei\Catalog\PluginCatalog"/>
+        </service>
         <service id="MgdBarrierefrei\Storefront\AccessibilityController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
         </service>

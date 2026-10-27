@@ -5,4 +5,5 @@ Dieses Wiki erklärt Installation, Konfiguration, Erklärungstext, Datenschutz u
 - [Konfiguration](Konfiguration.md)
 - [Erklärung prüfen](Erklaerung-pruefen.md)
 - [Updates](Updates.md)
+- [Weitere Plugins](Weitere-Plugins.md)
 - [Datenschutz und Sicherheit](Datenschutz-und-Sicherheit.md)
