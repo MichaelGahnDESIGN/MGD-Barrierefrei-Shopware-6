@@ -29,6 +29,7 @@ jobs:
       - name: JavaScript-Syntax
         run: |
           node --check src/Resources/app/storefront/src/js/mgd-barrierefrei.js
+          composer require -q --no-plugins twig/twig:^3 -d /tmp/twig && php tests/widget-config.php
           node --check src/Resources/public/administration/js/mgd-barrierefrei.js
       - name: Storefront-dist aktuell
         run: |

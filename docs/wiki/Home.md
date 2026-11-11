@@ -7,3 +7,5 @@ Dieses Wiki erklärt Installation, Konfiguration, Erklärungstext, Datenschutz u
 - [Updates](Updates.md)
 - [Weitere Plugins](Weitere-Plugins.md)
 - [Datenschutz und Sicherheit](Datenschutz-und-Sicherheit.md)
+
+- [Bedienhilfe für Besucher](Bedienhilfe.md)

@@ -7,7 +7,7 @@
             <name>enabled</name><defaultValue>true</defaultValue>
             <label>Bedienhilfe anzeigen</label>
             <label lang="en-GB">Show accessibility tools</label>
-            <helpText>Öffnet ein lokales Bedienpanel mit Kontrast, Schriftgröße, Fokus und reduzierter Bewegung.</helpText>
+            <helpText>Zeigt ein Symbol, das die Bedienhilfe öffnet: Schriftgröße, Kontrast, Graustufen, Abstände, lesbare Schrift, Links, Fokus, Bewegung, Mauszeiger, Lese-Lineal. DE/EN und Hell/Dunkel wählbar.</helpText>
         </input-field>
         <input-field type="single-select">
             <name>position</name><defaultValue>left</defaultValue>
@@ -19,7 +19,42 @@
         </input-field>
         <input-field type="text">
             <name>buttonLabel</name><defaultValue>Barrierefreiheit</defaultValue>
-            <label>Beschriftung der Schaltfläche</label>
+            <label>Beschriftung der Schaltfläche (Deutsch)</label>
+        </input-field>
+        <input-field type="text">
+            <name>buttonLabelEn</name><defaultValue>Accessibility</defaultValue>
+            <label>Beschriftung der Schaltfläche (Englisch)</label>
+            <label lang="en-GB">Button label (English)</label>
+            <helpText>Der Text erscheint nur, wenn die Maus über das Symbol fährt oder die Tastatur den Button erreicht.</helpText>
+        </input-field>
+        <input-field type="single-select">
+            <name>defaultLang</name><defaultValue>auto</defaultValue>
+            <label>Standard-Sprache</label>
+            <label lang="en-GB">Default language</label>
+            <helpText>Sprache beim ersten Besuch. Besucher können jederzeit selbst zwischen DE und EN wechseln.</helpText>
+            <options>
+                <option><id>auto</id><name>Automatisch (Sprache der Seite)</name><name lang="en-GB">Automatic (page language)</name></option>
+                <option><id>de</id><name>Deutsch</name><name lang="en-GB">German</name></option>
+                <option><id>en</id><name>Englisch</name><name lang="en-GB">English</name></option>
+            </options>
+        </input-field>
+        <input-field type="single-select">
+            <name>defaultTheme</name><defaultValue>auto</defaultValue>
+            <label>Standard-Design</label>
+            <label lang="en-GB">Default theme</label>
+            <helpText>Hell oder dunkel beim ersten Besuch. Besucher können jederzeit selbst wechseln.</helpText>
+            <options>
+                <option><id>auto</id><name>Automatisch (wie das Gerät)</name><name lang="en-GB">Automatic (device setting)</name></option>
+                <option><id>light</id><name>Hell</name><name lang="en-GB">Light</name></option>
+                <option><id>dark</id><name>Dunkel</name><name lang="en-GB">Dark</name></option>
+            </options>
+        </input-field>
+        <input-field type="int">
+            <name>offset</name><defaultValue>0</defaultValue>
+            <label>Abstand nach oben (Pixel)</label>
+            <label lang="en-GB">Offset from bottom (pixels)</label>
+            <helpText>Hebt den Button an, falls er z. B. einen Chat- oder Nach-oben-Button verdeckt. 0 bis 200.</helpText>
+            <min>0</min><max>200</max>
         </input-field>
         <input-field type="text">
             <name>accentColor</name><defaultValue>#b91c1c</defaultValue>

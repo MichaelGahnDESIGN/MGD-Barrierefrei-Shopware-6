@@ -1,23 +1,20 @@
-{% set position = config('MgdBarrierefrei.config.position') == 'right' ? 'right' : 'left' %}
-{% set label = config('MgdBarrierefrei.config.buttonLabel')|default('Barrierefreiheit') %}
-{% set accent = config('MgdBarrierefrei.config.accentColor')|default('#b91c1c') %}
-<div class="mgd-a11y" data-mgd-a11y data-position="{{ position }}" style="--mgd-a11y-accent: {{ accent|e('html_attr') }}">
-    <button class="mgd-a11y__trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="mgd-a11y-dialog">
-        <span aria-hidden="true">♿</span><span>{{ label|e }}</span>
-    </button>
-    <section class="mgd-a11y__dialog" id="mgd-a11y-dialog" role="dialog" aria-modal="true" aria-label="{{ label|e('html_attr') }}" hidden tabindex="-1">
-        <header class="mgd-a11y__header"><h2>{{ label|e }}</h2><button type="button" class="mgd-a11y__close" aria-label="Schließen">×</button></header>
-        <p>Darstellung nur für dieses Gerät anpassen.</p>
-        <div class="mgd-a11y__actions">
-            <button type="button" data-mgd-a11y-action="contrast">Kontrast</button>
-            <button type="button" data-mgd-a11y-action="gray">Graustufen</button>
-            <button type="button" data-mgd-a11y-action="focus">Fokus</button>
-            <button type="button" data-mgd-a11y-action="font-up">Schrift +</button>
-            <button type="button" data-mgd-a11y-action="font-down">Schrift −</button>
-            <button type="button" data-mgd-a11y-action="motion">Bewegung stoppen</button>
-            <button type="button" data-mgd-a11y-action="reset">Zurücksetzen</button>
-        </div>
-        <p class="mgd-a11y__statement"><a href="{{ path('frontend.mgd_barrierefrei.statement') }}">Erklärung zur Barrierefreiheit</a></p>
-        <p class="mgd-a11y__credit"><a href="https://michael-gahn.de" target="_blank" rel="noopener noreferrer">Michael-Gahn.de</a></p>
-    </section>
-</div>
+{# Config fürs Widget - Oberfläche baut das JS selbst im Shadow DOM #}
+{% set c = 'MgdBarrierefrei.config.' %}
+{% set accent = config(c ~ 'accentColor')|default('#b91c1c') %}
+{% set lang = config(c ~ 'defaultLang')|default('auto') %}
+{% set theme = config(c ~ 'defaultTheme')|default('auto') %}
+{% set de = config(c ~ 'buttonLabel')|default('')|striptags|trim|slice(0, 80) %}
+{% set en = config(c ~ 'buttonLabelEn')|default('')|striptags|trim|slice(0, 80) %}
+{% set offset = config(c ~ 'offset')|default(0) %}
+{% set offset = offset matches '/^\\d+$/' ? min(200, offset) : 0 %}
+{% set mgdA11y = {
+    position: config(c ~ 'position') == 'right' ? 'right' : 'left',
+    accent: accent matches '/^#[0-9a-fA-F]{6}$/' ? accent : '#b91c1c',
+    lang: lang in ['auto', 'de', 'en'] ? lang : 'auto',
+    theme: theme in ['auto', 'light', 'dark'] ? theme : 'auto',
+    labels: { de: de == 'Barrierefreiheit' ? '' : de, en: en == 'Accessibility' ? '' : en },
+    statementUrl: path('frontend.mgd_barrierefrei.statement'),
+    offset: offset + 0
+} %}
+{# 335 = JSON_HEX_TAG|AMP|APOS|QUOT|UNESCAPED_SLASHES|UNESCAPED_UNICODE, sicher im Script-Tag #}
+<script type="application/json" id="mgd-barrierefrei-config">{{ mgdA11y|json_encode(335)|raw }}</script>
