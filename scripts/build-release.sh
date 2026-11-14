@@ -15,5 +15,6 @@ cp -R src docs "$stage/$root/"
 (cd "$stage" && zip -qr "$project/$output" "$root" -x '*/.DS_Store')
 # dist muss im ZIP liegen
 unzip -l "$output" | grep -q "storefront/dist/storefront/js/mgd-barrierefrei/mgd-barrierefrei.js" || { echo "dist fehlt im ZIP" >&2; exit 1; }
-shasum -a 256 "$output" > "${output}.sha256"
+# nur Dateiname in die .sha256, sonst klappt shasum -c im Download-Ordner nicht
+(cd "$(dirname "$output")" && shasum -a 256 "$(basename "$output")" > "$(basename "$output").sha256")
 echo "Paket erstellt: $output"

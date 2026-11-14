@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 1.4.0 – 2026-11-14
+
+- Gemeinsame Versionsnummer **1.4.0** für alle Produkte von Michael Gahn DESIGN. So sieht man auf einen Blick, welche Fassungen zusammengehören.
+- Keine Änderung an den Funktionen.
+- Nach dem Update bitte Cache leeren (`bin/console cache:clear`).
+
 ## 1.2.0 – 2026-11-11
 
 - **Neu: Bedienhilfe komplett überarbeitet.** Neues Symbol (Person im Kreis) statt Rollstuhl. Der Text daneben erscheint nur, wenn die Maus darüber fährt oder die Tastatur den Button erreicht.
