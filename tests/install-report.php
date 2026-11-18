@@ -25,6 +25,6 @@ $config = (string) file_get_contents($root . '/src/Resources/config/config.xml')
 $check(str_contains($config, '<name>installReport</name><defaultValue>true</defaultValue>'), 'Schalter in der Plugin-Konfig, ab Werk an');
 $services = (string) file_get_contents($root . '/src/Resources/config/services.xml');
 $check(str_contains($services, 'shopware.scheduled.task') && str_contains($services, 'messenger.message_handler') && str_contains($services, 'kernel.event_subscriber'), 'Task, Handler und Schalter-Subscriber registriert');
-$check($r::PRODUCT === 'mgd-barrierefrei' && !str_contains((string) file_get_contents($root . '/src/Install/Settings.php'), 'ENTWURF'), 'Produktname wie Update-Datei, Hinweistext freigegeben');
+$check($r::PRODUCT === 'mgd-barrierefrei-shopware' && !str_contains((string) file_get_contents($root . '/src/Install/Settings.php'), 'ENTWURF'), 'Produktname wie Update-Datei, Hinweistext freigegeben');
 exit($fail === 0 ? 0 : 1);
 }

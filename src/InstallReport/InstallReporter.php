@@ -12,7 +12,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 // Free-Lizenz Anmeldung bei theme.michael-gahn.de - darf nie den Shop oder das Plugin-Setup killen
 final class InstallReporter
 {
-    public const PRODUCT = 'mgd-barrierefrei';
+    public const PRODUCT = 'mgd-barrierefrei-shopware';
     public const STATE_KEY = 'MgdBarrierefrei.config.installState';
     public const SWITCH_KEY = 'MgdBarrierefrei.config.installReport';
 
