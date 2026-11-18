@@ -69,3 +69,13 @@ Die Bedienhilfen speichern ausschließlich Einstellungen wie Kontrast oder Schri
 - [Updates](docs/wiki/Updates.md)
 - [Weitere Plugins](docs/wiki/Weitere-Plugins.md)
 - [Datenschutz und Sicherheit](docs/wiki/Datenschutz-und-Sicherheit.md)
+
+## Anmeldung der Installation (ab 1.5.0)
+
+Meldet sich höchstens einmal am Tag bei theme.michael-gahn.de (Plugin, Version, Shopsystem, Domain, zufällige ID). Abschaltbar in den Einstellungen.
+
+1. Die Meldung ist ab Werk eingeschaltet.
+2. Gemeldet wird beim Installieren, Aktivieren und Updaten und danach höchstens einmal am Tag über eine geplante Aufgabe. Nie für Besucher im Storefront.
+3. Abschalten: **Erweiterungen → Meine Erweiterungen → MGD Barrierefrei → Konfigurieren**. Ganz unten den Schalter **Installation bei Michael Gahn DESIGN melden** ausschalten und speichern. Dann wird der Eintrag auf der Plattform gelöscht.
+4. Das Plugin funktioniert immer voll, auch ohne Meldung oder wenn die Plattform nicht erreichbar ist.
+- Technik: gemeinsamer MGD Install-Client, Quelle im Pro-Repo `plugins/install-client`, hier unter `src/Install`. Diesen Ordner nicht von Hand ändern, er wird neu erzeugt.

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.0 – 2026-11-18
+
+- **Neu: Anmeldung der Installation (Free-Lizenz).** Das Plugin meldet sich einmal bei theme.michael-gahn.de an und danach höchstens einmal am Tag. Gesendet werden nur: Plugin-Name, Version, Shopsystem, die Domain deines Shops und eine zufällige Installations-ID. Keine Besucher-, Kunden- oder Bestelldaten.
+- Gemeldet wird beim Installieren, Aktivieren und Updaten und danach einmal am Tag über eine geplante Aufgabe (Scheduled Task). Nie im Storefront.
+- Ab Werk eingeschaltet. Abschalten in der Plugin-Konfiguration unter **Anmeldung der Installation**. Dann wird der Eintrag auf der Plattform sofort gelöscht. Das Plugin funktioniert genauso weiter.
+
 ## Unreleased
 
 ## 1.4.0 – 2026-11-14

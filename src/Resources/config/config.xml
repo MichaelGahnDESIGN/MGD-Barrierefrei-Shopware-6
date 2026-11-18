@@ -82,4 +82,14 @@
         <input-field type="textarea"><name>knownBarriers</name><label>Bekannte Barrieren oder Ausnahmen</label><helpText>Freie Angabe; vor Veröffentlichung fachlich und rechtlich prüfen.</helpText></input-field>
         <input-field type="text"><name>statementDate</name><label>Stand der Erklärung</label><placeholder>2026-10-23</placeholder></input-field>
     </card>
+    <card>
+        <title>Anmeldung der Installation</title>
+        <title lang="en-GB">Installation report</title>
+        <input-field type="bool">
+            <name>installReport</name><defaultValue>true</defaultValue>
+            <label>Installation bei Michael Gahn DESIGN melden</label>
+            <label lang="en-GB">Report installation to Michael Gahn DESIGN</label>
+            <helpText>Dieses Plugin meldet sich einmal bei theme.michael-gahn.de an und danach höchstens einmal am Tag. Gesendet werden nur: Plugin-Name, Version, Shopsystem, die Domain deines Shops und eine zufällige Installations-ID. So wissen wir, wie viele Shops das Plugin nutzen, und können dir Updates bereitstellen. Du kannst das hier jederzeit abschalten. Das Plugin funktioniert dann genauso weiter.</helpText>
+        </input-field>
+    </card>
 </config>
