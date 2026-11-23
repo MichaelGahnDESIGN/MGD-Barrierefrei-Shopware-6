@@ -22,6 +22,15 @@
             <argument>plugin-barrierefrei-shopware</argument>
             <argument>false</argument>
         </service>
+        <!-- tägliche Aktiv-Meldung, Shopware hat keinen WP-Cron -->
+        <service id="MgdBarrierefrei\Kit\Platform\Shopware\PingTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="MgdBarrierefrei\Kit\Platform\Shopware\PingTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="MgdBarrierefrei\Kit\Platform\Shopware\ShopwareKit"/>
+            <tag name="messenger.message_handler" handles="MgdBarrierefrei\Kit\Platform\Shopware\PingTask"/>
+        </service>
         <service id="MgdBarrierefrei\Kit\Platform\Shopware\ApiController" public="true">
             <argument type="service" id="MgdBarrierefrei\Kit\Platform\Shopware\ShopwareKit"/>
         </service>

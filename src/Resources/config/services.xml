@@ -11,20 +11,12 @@
         <service id="MgdBarrierefrei\Storefront\AccessibilityController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
         </service>
-        <!-- Free-Lizenz Anmeldung, max 1x am Tag -->
+        <!-- Free-Lizenz Anmeldung bei Install/Aktivieren/Update + Schalter aus der Plugin-Konfig -->
         <service id="MgdBarrierefrei\InstallReport\InstallReporter">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
-        <service id="MgdBarrierefrei\InstallReport\InstallReportTask">
-            <tag name="shopware.scheduled.task"/>
-        </service>
-        <service id="MgdBarrierefrei\InstallReport\InstallReportTaskHandler">
-            <argument type="service" id="scheduled_task.repository"/>
-            <argument type="service" id="logger"/>
-            <argument type="service" id="MgdBarrierefrei\InstallReport\InstallReporter"/>
-            <tag name="messenger.message_handler"/>
-        </service>
+        <!-- tägliche Meldung jetzt per PingTask aus dem Baukasten, eigener Task raus -->
         <service id="MgdBarrierefrei\InstallReport\InstallSwitchSubscriber">
             <argument type="service" id="MgdBarrierefrei\InstallReport\InstallReporter"/>
             <tag name="kernel.event_subscriber"/>

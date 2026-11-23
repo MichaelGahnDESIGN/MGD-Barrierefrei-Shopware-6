@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace MgdBarrierefrei\InstallReport;
+namespace MgdBarrierefrei\Kit\Platform\Shopware;
 
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
 
-// täglicher Ping (läuft auch über den Admin-Worker)
-final class InstallReportTask extends ScheduledTask
+// tägliche Aktiv-Meldung (Install-Client), Name je Plugin eindeutig, läuft nur mit Shopware-Scheduler
+final class PingTask extends ScheduledTask
 {
     public static function getTaskName(): string
     {
-        return 'mgd_barrierefrei.install_report';
+        return 'mgd_kit.mgd_barrierefrei_shopware.ping';
     }
 
     public static function getDefaultInterval(): int

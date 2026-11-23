@@ -74,14 +74,16 @@ final class ShopwareKit
      * Aus Plugin::uninstall(): Kit für den UninstallContext bauen, nur mit SystemConfigService
      * @param object $uninstallContext Shopware\Core\Framework\Plugin\Context\UninstallContext
      * @param object $systemConfig Shopware\Core\System\SystemConfig\SystemConfigService
+     * @param object|null $connection Doctrine\DBAL\Connection, ohne > aus dem SystemConfigService geholt
      */
-    public static function forUninstall(object $uninstallContext, object $systemConfig, string $product, ?Transport $http = null): ?self
+    public static function forUninstall(object $uninstallContext, object $systemConfig, string $product, ?Transport $http = null, ?object $connection = null): ?self
     {
         try {
             $tech = (string) $uninstallContext->getPlugin()->getName();
             $version = (string) $uninstallContext->getCurrentPluginVersion();
+            $db = $connection ?? UninstallShop::connectionOf($systemConfig);
 
-            return new self(new UninstallShop($systemConfig, $tech, $version), $product, $tech, $tech, http: $http);
+            return new self(new UninstallShop($systemConfig, $tech, $version, $db), $product, $tech, $tech, http: $http);
         } catch (\Throwable) {
             return null;
         }

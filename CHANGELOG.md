@@ -9,6 +9,7 @@ Diese Version ist eine Brückenversion. Deine Einstellungen bleiben genau so, wi
 - Den Knopf sehen nur Admins mit den Rechten „Erweiterungen hochladen“ und „Erweiterungen verwalten“. Klappt das Update nicht, zeigt die Seite einen Download-Link und 3 einfache Schritte.
 - **Weitere Plugins** stehen jetzt auf dieser Seite. Die alte Seite „MGD Weitere Plugins“ und der alte Update-Check über GitHub sind abgeschaltet.
 - **Löschen:** Deinstallierst du das Plugin, wird die Installation bei theme.michael-gahn.de abgemeldet.
+- Die tägliche Meldung läuft jetzt über eine eingeplante Aufgabe aus dem Baukasten (`mgd_kit.mgd_barrierefrei_shopware.ping`). Die alte Aufgabe `mgd_barrierefrei.install_report` ist raus.
 - Technik: gemeinsamer Plugin-Baukasten aus dem Pro-Repo unter `src/Kit`. Der alte Install-Client unter `src/Install` ist raus.
 
 ## 1.5.1 – 2026-11-18
