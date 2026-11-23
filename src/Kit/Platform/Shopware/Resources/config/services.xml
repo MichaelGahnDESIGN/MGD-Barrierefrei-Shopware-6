@@ -28,6 +28,7 @@
         </service>
         <service id="MgdBarrierefrei\Kit\Platform\Shopware\PingTaskHandler">
             <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="logger"/>
             <argument type="service" id="MgdBarrierefrei\Kit\Platform\Shopware\ShopwareKit"/>
             <tag name="messenger.message_handler" handles="MgdBarrierefrei\Kit\Platform\Shopware\PingTask"/>
         </service>
