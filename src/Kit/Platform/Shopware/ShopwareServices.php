@@ -6,7 +6,7 @@ namespace MgdBarrierefrei\Kit\Platform\Shopware;
 
 // Shopware-Kleber. Nur hier stehen Shopware-Klassen, Typen locker (object), damit die Datei ohne Shopware lintet
 // geprüft gegen shopware/shopware v6.5.8.18, v6.6.10.6, v6.7.16.1
-final class ShopwareServices implements ShopwareApi
+final class ShopwareServices implements ShopwareApi, CatalogMediaDir
 {
     public const RUNTIME_PARAM = 'shopware.deployment.runtime_extension_management';
     // Storefront-Typ in sales_channel.type_id
@@ -93,6 +93,21 @@ final class ShopwareServices implements ShopwareApi
         $app = (string) ($_SERVER['APP_URL'] ?? $_ENV['APP_URL'] ?? getenv('APP_URL') ?: '');
 
         return strtolower((string) parse_url($app, PHP_URL_HOST));
+    }
+
+    // var/ liegt nicht unter public/ > Bilder gehen nur über die Admin-API raus
+    public function catalogMediaDir(string $product): string
+    {
+        try {
+            $root = $this->params !== null && $this->params->has('kernel.project_dir') ? (string) $this->params->get('kernel.project_dir') : '';
+            if ($root === '' || preg_match(ShopwareKit::PRODUCT_RE, $product) !== 1 || !is_dir($root . '/var')) {
+                return '';
+            }
+
+            return rtrim($root, '/') . '/var/mgd-kit/' . $product . '/catalog';
+        } catch (\Throwable) {
+            return '';
+        }
     }
 
     public function get(string $key): mixed

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MgdBarrierefrei\Kit\Platform\Shopware;
 
 use MgdBarrierefrei\Kit\Install\{InstallClient, Settings};
-use MgdBarrierefrei\Kit\Catalog\Recommendations;
+use MgdBarrierefrei\Kit\Catalog\{CatalogItems, MediaCache, Recommendations};
 use MgdBarrierefrei\Kit\License\LicenseClient;
 
 // Logik hinter den Admin-API-Routen, ohne Symfony testbar. Antwort immer [HTTP-Status, Daten]
@@ -27,6 +27,7 @@ final class ApiHandler
         private readonly ?InstallClient $install,
         private readonly LicenseClient $license,
         private readonly string $installSwitchKey = '',
+        private readonly ?MediaCache $media = null,
     ) {
     }
 
@@ -58,10 +59,35 @@ final class ApiHandler
             return self::denied();
         }
         if ($this->recommendations === null) {
-            return [200, ['items' => [], 'source' => 'fallback']];
+            return [200, ['items' => [], 'source' => 'fallback', 'checkedAt' => 0]];
         }
 
-        return self::guard(fn (): array => [200, $this->recommendations->load()]);
+        return self::guard(function (): array {
+            $res = $this->recommendations->load();
+            $m = $this->media;
+            $m?->syncItems($res['items'], $res['source'] === 'fresh');
+            // keine fremden Bild-URLs ans JS, nur Dateinamen aus dem eigenen Cache (Abruf über media())
+            $items = CatalogItems::prepare($res['items'], $m !== null ? static fn (string $url): string => $m->local($url) : null);
+
+            return [200, ['items' => $items, 'source' => $res['source'], 'checkedAt' => $res['checkedAt']]];
+        });
+    }
+
+    /** Katalog-Bild als data:-URI aus dem Cache (Admin-Browser lädt nie von extern) @return array{0:int,1:array<string,mixed>} */
+    public function media(object $context, mixed $name): array
+    {
+        if (!Acl::allowed($context, Acl::READ)) {
+            return self::denied();
+        }
+        if (!is_string($name) || preg_match(MediaCache::FILE_RE, $name) !== 1) {
+            return [400, ['message' => self::ERROR]];
+        }
+
+        return self::guard(function () use ($name): array {
+            $data = $this->media?->dataUri($name) ?? '';
+
+            return $data !== '' ? [200, ['data' => $data]] : [404, ['message' => self::ERROR]];
+        });
     }
 
     /** @return array{0:int,1:array<string,mixed>} */

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.1 – 2026-11-24
+
+- **Neue Ansicht „Weitere Plugins“** auf der Seite „MGD Barrierefrei“: mit Bildern, Kategorien, Suche, Preis-Filter und einem Fenster „Details“, im Design der „MGD Plugin-Kollektion“.
+- Die Bilder holt dein Shop-Server selbst von theme.michael-gahn.de und speichert sie geschützt. Der Browser lädt keine Bilder von fremden Seiten.
+- Klappt nach „Jetzt aktualisieren“ der letzte Schritt nicht, steht jetzt ein klarer Hinweis da, was zu tun ist.
+- Technik: Baukasten neu erzeugt (Pro-Repo ab a2005ea).
+
 ## 1.6.0 – 2026-11-23
 
 Diese Version ist eine Brückenversion. Deine Einstellungen bleiben genau so, wie sie sind.

@@ -30,6 +30,13 @@ final class ApiController
         return self::json($this->kit->handler()->recommendations(self::context($request)));
     }
 
+    // Bild nur mit Admin-Login, Name = 32 hex .webp
+    #[Route(path: self::PREFIX . '/media/{name}', name: 'api.action.mgd_kit.mgd_barrierefrei_shopware.media', requirements: ['name' => '[a-f0-9]{32}\\.webp'], defaults: ['_acl' => ['system_config:read']], methods: ['GET'])]
+    public function media(Request $request, string $name): JsonResponse
+    {
+        return self::json($this->kit->handler()->media(self::context($request), $name));
+    }
+
     #[Route(path: self::PREFIX . '/update', name: 'api.action.mgd_kit.mgd_barrierefrei_shopware.update', defaults: ['_acl' => ['system.plugin_maintain', 'system.plugin_upload']], methods: ['POST'])]
     public function update(Request $request): JsonResponse
     {

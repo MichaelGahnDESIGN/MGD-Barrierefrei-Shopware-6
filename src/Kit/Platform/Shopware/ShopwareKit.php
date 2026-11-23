@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MgdBarrierefrei\Kit\Platform\Shopware;
 
 use MgdBarrierefrei\Kit\Install\{CallbackStore, CurlTransport, InstallClient, Transport};
-use MgdBarrierefrei\Kit\Catalog\Recommendations;
+use MgdBarrierefrei\Kit\Catalog\{MediaCache, Recommendations};
 use MgdBarrierefrei\Kit\License\{CurlPost, HttpPost, LicenseClient};
 
 // Einstieg für Shopware-Plugins (docs/PLUGIN-BAUKASTEN.md, Kapitel Shopware). Wird per services.xml gebaut
@@ -37,6 +37,7 @@ final class ShopwareKit
         private readonly ?Download $download = null,
         private readonly ?Transport $http = null,
         private readonly ?HttpPost $post = null,
+        private readonly ?MediaCache $media = null,
     ) {
         if (preg_match(self::PRODUCT_RE, $product) !== 1 || preg_match(self::TECH_RE, $technicalName) !== 1) {
             throw new \InvalidArgumentException('Produkt oder technischer Name ungültig.');
@@ -139,7 +140,18 @@ final class ShopwareKit
         $updates = new UpdateService($client, $this->store('mgdKitUpdates'), $this->product, $this->rootDir);
         $updater = new PluginUpdater($this->shop, $updates, $this->download ?? new CurlDownload('MGDKit/1.0 (shopware6)'), $this->technicalName, $this->rootDir);
 
-        return new ApiHandler($this->pluginName, $this->technicalName, $this->shop, $updates, $updater, $this->recommendations(), $client, $this->license(), $this->configKey('installReport'));
+        return new ApiHandler($this->pluginName, $this->technicalName, $this->shop, $updates, $updater, $this->recommendations(), $client, $this->license(), $this->configKey('installReport'), $this->mediaCache());
+    }
+
+    // Katalog-Bilder im privaten var/-Ordner, raus nur als data:-URI über die Admin-API
+    private function mediaCache(): ?MediaCache
+    {
+        if ($this->media !== null) {
+            return $this->media;
+        }
+        $dir = $this->shop instanceof CatalogMediaDir ? $this->shop->catalogMediaDir($this->product) : '';
+
+        return $dir !== '' ? new MediaCache($dir, MediaCache::curl('MGDKit/1.0 (shopware6)')) : null;
     }
 
     private function recommendations(): ?Recommendations
