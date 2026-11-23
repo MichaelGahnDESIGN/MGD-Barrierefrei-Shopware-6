@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MgdBarrierefrei\InstallReport;
 
 use Doctrine\DBAL\Connection;
-use MgdBarrierefrei\Install\InstallClient;
-use MgdBarrierefrei\Install\Platform\Shopware;
+use MgdBarrierefrei\Kit\Install\InstallClient;
+use MgdBarrierefrei\Kit\Install\Platform\Shopware;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 // Free-Lizenz Anmeldung bei theme.michael-gahn.de - darf nie den Shop oder das Plugin-Setup killen

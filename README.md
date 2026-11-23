@@ -12,8 +12,7 @@ Kostenlose, lokal arbeitende Bedienhilfe mit einer konfigurierbaren Erklärung z
 - öffentliche Route `/barrierefreiheit` mit Text aus den Plugin-Einstellungen
 - Kontakt, verantwortliche Stelle, eigener Status und bekannte Barrieren frei pflegbar
 - sichtbarer Hinweis auf [Michael-Gahn.de](https://michael-gahn.de) im Bedienpanel, stets in einem neuen Tab mit `noopener noreferrer`
-- geschützter GitHub-Release-Check über die Shopware-Admin-API
-- Admin-Seite **Weitere Plugins** mit weiteren kostenlosen Plugins für Shopware 6 (nur im Admin, nichts wird automatisch installiert)
+- Admin-Seite **MGD Barrierefrei** (ab 1.6.0) mit Info, Updates (Knopf „Jetzt aktualisieren“), weiteren Plugins und dem Schalter „Installation melden“
 
 ## Installation und Updates
 
@@ -23,18 +22,25 @@ Kostenlose, lokal arbeitende Bedienhilfe mit einer konfigurierbaren Erklärung z
 4. Konfiguriere die Angaben unter **Erweiterungen → MGD Barrierefrei → Konfiguration**.
 5. Lege im Navigationsbereich einen Link auf `/barrierefreiheit` an.
 
-Jedes GitHub-Release enthält das fertige Storefront-Paket (Ordner `src/Resources/app/storefront/dist`). Ein manuelles Bauen der Administration oder Storefront ist nicht nötig, du brauchst kein Node. Nach der Installation einmal **Einstellungen → System → Caches & Indizes → Cache leeren** (bzw. `bin/console theme:compile`), damit Shopware das Theme neu zusammenstellt. Der Admin-Endpunkt `POST /api/_action/mgd-barrierefrei/update/check` prüft ausschließlich die Release-Metadaten und erfordert die Shopware-Berechtigung `system_config:read`. Die Installation eines Updates wird weiterhin bewusst über Shopware ausgelöst. Vor einer Aktualisierung gehören Sicherung und Wartungsfenster zum Ablauf.
+Jedes GitHub-Release enthält das fertige Storefront-Paket (Ordner `src/Resources/app/storefront/dist`). Ein manuelles Bauen der Administration oder Storefront ist nicht nötig, du brauchst kein Node. Nach der Installation einmal **Einstellungen → System → Caches & Indizes → Cache leeren** (bzw. `bin/console theme:compile`), damit Shopware das Theme neu zusammenstellt. Vor einer Aktualisierung gehören Sicherung und Wartungsfenster zum Ablauf.
 
-## Weitere Plugins (Admin-Seite)
+### Updates ab 1.6.0
 
-Unter **Einstellungen → Erweiterungen → MGD Weitere Plugins** zeigt das Plugin weitere kostenlose Plugins von Michael Gahn DESIGN für Shopware 6.
+1. Öffne **Einstellungen → Erweiterungen → MGD Barrierefrei**.
+2. Steht dort „Version X ist verfügbar“, klicke **Jetzt aktualisieren**.
+3. Das Plugin lädt die ZIP-Datei aus dem GitHub-Release. Es prüft Größe und Prüfsumme (SHA-256). Nur wenn alles stimmt, spielt Shopware sie ein.
+4. Danach steht dort „Fertig“. Lade die Seite neu.
+5. Klappt es nicht (zum Beispiel fehlen Schreibrechte), zeigt die Seite einen Link zur ZIP-Datei. Lade sie dann selbst unter **Erweiterungen → Meine Erweiterungen → Erweiterung hochladen** hoch und klicke beim Plugin auf **Aktualisieren**.
 
-- Die Liste kommt von `https://theme.michael-gahn.de/api/catalog/plugins.json` und wird 6 Stunden zwischengespeichert.
-- Der Button **Liste aktualisieren** lädt sie neu (höchstens einmal pro Minute).
-- Es wird nichts automatisch installiert. Du lädst das ZIP herunter und lädst es selbst unter **Erweiterungen → Meine Erweiterungen → Apps** hoch.
-- Ist der Katalog nicht erreichbar, steht dort nur ein Hinweis. Dein Shop ist nie betroffen.
-- Der Katalog liefert derzeit keine Bilder. Falls er später welche liefert, lädt dein Browser sie nur auf dieser Admin-Seite (nur von theme.michael-gahn.de). Im Shop für Besucher gibt es keine Anfrage an theme.michael-gahn.de.
-- Admin-Endpunkt: `POST /api/_action/mgd-barrierefrei/catalog` (Berechtigung `system_config:read`).
+Den Knopf sehen nur Admins mit den Rechten „Erweiterungen hochladen“ und „Erweiterungen verwalten“.
+
+## Weitere Plugins (ab 1.6.0)
+
+Die Liste steht jetzt auf der Seite **Einstellungen → Erweiterungen → MGD Barrierefrei**. Die alte Seite „MGD Weitere Plugins“ gibt es nicht mehr.
+
+- Die Liste kommt von theme.michael-gahn.de und wird 15 Minuten zwischengespeichert. Antwortet der Server nicht, siehst du die letzte gute Liste.
+- Es wird nichts automatisch installiert.
+- Im Shop für Besucher gibt es keine Anfrage an theme.michael-gahn.de.
 
 Mehr dazu im [Wiki: Weitere Plugins](docs/wiki/Weitere-Plugins.md).
 
@@ -76,6 +82,7 @@ Meldet sich höchstens einmal am Tag bei theme.michael-gahn.de (Plugin, Version,
 
 1. Die Meldung ist ab Werk eingeschaltet.
 2. Gemeldet wird beim Installieren, Aktivieren und Updaten und danach höchstens einmal am Tag über eine geplante Aufgabe. Nie für Besucher im Storefront.
-3. Abschalten: **Erweiterungen → Meine Erweiterungen → MGD Barrierefrei → Konfigurieren**. Ganz unten den Schalter **Installation bei Michael Gahn DESIGN melden** ausschalten und speichern. Dann wird der Eintrag auf der Plattform gelöscht.
-4. Das Plugin funktioniert immer voll, auch ohne Meldung oder wenn die Plattform nicht erreichbar ist.
-- Technik: gemeinsamer MGD Install-Client, Quelle im Pro-Repo `plugins/install-client`, hier unter `src/Install`. Diesen Ordner nicht von Hand ändern, er wird neu erzeugt.
+3. Abschalten: Auf der Seite **Einstellungen → Erweiterungen → MGD Barrierefrei** (ab 1.6.0) oder in **Erweiterungen → Meine Erweiterungen → MGD Barrierefrei → Konfigurieren** den Schalter **Installation bei Michael Gahn DESIGN melden** ausschalten und speichern. Dann wird der Eintrag auf der Plattform gelöscht.
+4. Deinstallierst du das Plugin (ab 1.6.0), wird der Eintrag auf der Plattform ebenfalls gelöscht.
+5. Das Plugin funktioniert immer voll, auch ohne Meldung oder wenn die Plattform nicht erreichbar ist.
+- Technik (ab 1.6.0): gemeinsamer Plugin-Baukasten aus dem Pro-Repo (`php bin/build-plugin-kit.php … --platform=shopware6 --namespace='MgdBarrierefrei\Kit' --product=mgd-barrierefrei-shopware --technical-name=MgdBarrierefrei --name='MGD Barrierefrei' --catalog-slug=plugin-barrierefrei-shopware`), hier unter `src/Kit`. Diesen Ordner nicht von Hand ändern, er wird neu erzeugt.

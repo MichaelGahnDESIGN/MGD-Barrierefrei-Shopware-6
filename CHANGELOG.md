@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.0 – 2026-11-23
+
+Diese Version ist eine Brückenversion. Deine Einstellungen bleiben genau so, wie sie sind.
+
+- **Neue Seite „MGD Barrierefrei“** unter **Einstellungen → Erweiterungen**. Dort siehst du Version, Update-Stand, weitere Plugins und den Schalter „Installation melden“.
+- **Updates über theme.michael-gahn.de:** Gibt es eine neue Version, zeigt die Seite den Knopf **„Jetzt aktualisieren“**. Vorher werden Herkunft (GitHub), Größe und Prüfsumme der Datei geprüft. Es gibt kein automatisches Update.
+- Den Knopf sehen nur Admins mit den Rechten „Erweiterungen hochladen“ und „Erweiterungen verwalten“. Klappt das Update nicht, zeigt die Seite einen Download-Link und 3 einfache Schritte.
+- **Weitere Plugins** stehen jetzt auf dieser Seite. Die alte Seite „MGD Weitere Plugins“ und der alte Update-Check über GitHub sind abgeschaltet.
+- **Löschen:** Deinstallierst du das Plugin, wird die Installation bei theme.michael-gahn.de abgemeldet.
+- Technik: gemeinsamer Plugin-Baukasten aus dem Pro-Repo unter `src/Kit`. Der alte Install-Client unter `src/Install` ist raus.
+
 ## 1.5.1 – 2026-11-18
 
 - Die Anmeldung nutzt jetzt den eigenen Produktnamen **mgd-barrierefrei-shopware**. So zählt theme.michael-gahn.de Shopware-Installationen getrennt von JTL und WordPress. Wer 1.5.0 hatte, wird einmal neu angemeldet.

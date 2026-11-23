@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MgdBarrierefrei\Install\Platform;
+namespace MgdBarrierefrei\Kit\Install\Platform;
 
-use MgdBarrierefrei\Install\{CallbackStore, Factory, InstallClient};
+use MgdBarrierefrei\Kit\Install\{CallbackStore, Factory, InstallClient};
 
 // Shopware-Anbindung über SystemConfigService. Lifecycle install/activate/update -> ping(true), ScheduledTask/Admin -> ping()
 final class Shopware

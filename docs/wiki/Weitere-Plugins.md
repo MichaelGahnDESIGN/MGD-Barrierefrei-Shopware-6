@@ -1,5 +1,7 @@
 # Weitere Plugins
 
+> Ab Version 1.6.0 steht die Liste auf der Seite **Einstellungen → Erweiterungen → MGD Barrierefrei** (Bereich „Weitere Plugins“). Die alte Seite „MGD Weitere Plugins“ gibt es dann nicht mehr. Der Text unten beschreibt die alte Seite bis 1.5.1.
+
 Auf dieser Seite im Shopware-Admin siehst du weitere kostenlose Plugins von Michael Gahn DESIGN, die zu deinem Shop passen können.
 
 ## So öffnest du die Seite

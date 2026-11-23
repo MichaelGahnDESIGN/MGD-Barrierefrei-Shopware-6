@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MgdBarrierefrei\Install;
+namespace MgdBarrierefrei\Kit\Install;
 
 // Zustand über Callbacks speichern (WP-Option, Shopware SystemConfig, JTL Plugin-Einstellung ...). Wert = JSON-Text
 final class CallbackStore implements Store

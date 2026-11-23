@@ -1,234 +1,280 @@
-// Admin-Seite "Weitere Plugins" - fertig geschrieben, kein Build nötig
-// Daten kommen aus POST /api/_action/mgd-barrierefrei/catalog (Feed von theme.michael-gahn.de)
-(function () {
+// MGD Plugin-Baukasten - Admin-Seite "MGD Barrierefrei" fertig geschrieben, kein Build nötig
+// Daten aus /api/_action/mgd-kit/mgd-barrierefrei-shopware/... , keine fremden Bilder/Schriften
+(function (root) {
     'use strict';
 
-    if (typeof Shopware === 'undefined') {
-        return;
-    }
-
-    // Links + Bilder nur von diesen Adressen (zweite Sperre, Server prüft auch)
+    var PRODUCT = 'mgd-barrierefrei-shopware';
+    var MODULE = 'mgd-kit-' + PRODUCT;
+    var API = '/_action/mgd-kit/' + PRODUCT;
+    var STYLE_ID = MODULE + '-style';
+    // Links nur auf diese Adressen (Server prüft auch)
     var LINK_PREFIXES = ['https://theme.michael-gahn.de/', 'https://github.com/MichaelGahnDESIGN/'];
-    var IMAGE_PREFIX = 'https://theme.michael-gahn.de/uploads/catalog/';
-    var STYLE_ID = 'mgd-barrierefrei-catalog-style';
+    var PLUGIN_PRIVS = ['system.plugin_maintain', 'system.plugin_upload'];
 
     var STYLE = [
-        '.mgd-cat-intro{margin:0 0 12px}',
-        '.mgd-cat-note{margin:12px 0 0;font-size:13px;color:#52667a}',
-        '.mgd-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:16px}',
-        '.mgd-cat-item{--mgd-accent:#9aa8b6;display:flex;flex-direction:column;gap:8px;padding:16px;border:1px solid #d1d9e0;border-left:4px solid var(--mgd-accent);border-radius:6px;background:#fff}',
-        '.mgd-cat-item h3{margin:0;font-size:16px}',
-        '.mgd-cat-image{display:block;width:100%;height:auto;max-height:160px;object-fit:cover;border-radius:4px}',
-        '.mgd-cat-head{display:flex;align-items:center;gap:10px}',
-        '.mgd-cat-icon{flex:none;width:36px;height:36px;border-radius:6px;object-fit:cover}',
-        '.mgd-cat-icon--fallback{display:flex;align-items:center;justify-content:center;background:#eef2f6;color:#1f2d3d;font-weight:700}',
-        '.mgd-cat-badges{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}',
-        '.mgd-cat-badge{padding:2px 8px;border-radius:10px;background:#eef2f6;color:#1f2d3d;font-size:12px}',
-        '.mgd-cat-badge--rec{background:#1f2d3d;color:#fff}',
-        '.mgd-cat-text{margin:0;flex:1}',
-        '.mgd-cat-links{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0}',
-        '.mgd-cat-empty{padding:16px;border:1px dashed #9aa8b6;border-radius:6px}',
-        // Text nur für Screenreader
-        '.mgd-barrierefrei-catalog .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}'
+        '.mgd-kit-sw p{margin:0 0 10px;line-height:1.5}',
+        '.mgd-kit-sw .mgd-kit-note{padding:12px;border-left:4px solid #b45309;background:#fffbeb;color:#1f2d3d}',
+        '.mgd-kit-sw .mgd-kit-error{padding:12px;border-left:4px solid #b91c1c;background:#fef2f2;color:#1f2d3d}',
+        '.mgd-kit-sw .mgd-kit-ok{padding:12px;border-left:4px solid #15803d;background:#f0fdf4;color:#1f2d3d}',
+        '.mgd-kit-sw ol{margin:0 0 10px 20px}',
+        '.mgd-kit-sw .mgd-kit-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}',
+        '.mgd-kit-sw .mgd-kit-card{padding:16px;border:1px solid #d1d9e0;border-radius:6px;background:#fff}',
+        '.mgd-kit-sw .mgd-kit-card h3{margin:0 0 8px;font-size:16px}',
+        '.mgd-kit-sw .mgd-kit-small{font-size:13px;color:#3d4c5c}',
+        '.mgd-kit-sw label{display:block;margin:0 0 6px;font-weight:600}',
+        '.mgd-kit-sw input[type=password]{width:100%;max-width:420px;min-height:44px;padding:8px;border:1px solid #6b7c8d;border-radius:4px}',
+        '.mgd-kit-sw a:focus-visible,.mgd-kit-sw input:focus-visible{outline:3px solid #1d4ed8;outline-offset:2px}'
     ].join('');
 
-    function addStyle() {
-        if (document.getElementById(STYLE_ID)) {
-            return;
-        }
-        var el = document.createElement('style');
-        el.id = STYLE_ID;
-        el.textContent = STYLE;
-        document.head.appendChild(el);
-    }
+    var TEMPLATE = [
+        '<sw-page class="mgd-kit-sw">',
+        '  <template #smart-bar-header><h2>{{ title }}</h2></template>',
+        '  <template #content>',
+        '    <sw-card-view>',
+        '      <p v-if="isLoading" role="status">Wird geladen …</p>',
+        '      <p v-else-if="loadError" class="mgd-kit-error" role="alert">Die Seite konnte gerade nicht geladen werden. Bitte lade sie neu.</p>',
+        '      <template v-else>',
+        '        <sw-card title="Info">',
+        '          <p>Plugin: {{ status.name }}</p>',
+        '          <p>Version: {{ updates.installed || "unbekannt" }}</p>',
+        '        </sw-card>',
+        '        <sw-card title="Updates">',
+        '          <p v-if="!updates.available">Die Update-Prüfung hat gerade nicht geklappt. Versuche es später noch einmal.</p>',
+        '          <p v-else-if="!updates.newer">Du hast die aktuelle Version.</p>',
+        '          <template v-else>',
+        '            <p>Version {{ updates.newest }} ist verfügbar.</p>',
+        '            <p v-if="updates.changelog" class="mgd-kit-small">{{ updates.changelog }}</p>',
+        '            <sw-button v-if="status.canUpdate && !fallback" variant="primary" :disabled="isUpdating" :isLoading="isUpdating" @click="runUpdate">Jetzt aktualisieren</sw-button>',
+        '            <p v-if="!status.canUpdate && !fallback" class="mgd-kit-small">Den Knopf „Jetzt aktualisieren“ sehen nur Admins mit dem Recht, Erweiterungen hochzuladen und zu verwalten.</p>',
+        '          </template>',
+        '          <p v-if="updates.notice" class="mgd-kit-note">{{ updates.notice.text }} <a v-if="isLink(updates.notice.url)" :href="updates.notice.url" target="_blank" rel="noopener noreferrer">Zur aktuellen Version</a></p>',
+        '          <p v-if="message" :class="messageOk ? \'mgd-kit-ok\' : \'mgd-kit-error\'" role="status">{{ message }}</p>',
+        '          <template v-if="fallback || (updates.newer && !status.canUpdate)">',
+        '            <p>So aktualisierst du von Hand:</p>',
+        '            <ol><li v-for="(step, i) in steps" :key="i">{{ step }}</li></ol>',
+        '            <p v-if="isLink(downloadLink)"><a :href="downloadLink" target="_blank" rel="noopener noreferrer">ZIP-Datei herunterladen</a></p>',
+        '          </template>',
+        '        </sw-card>',
+        '        <sw-card title="Weitere Plugins">',
+        '          <p v-if="recStale" class="mgd-kit-small">Die Liste konnte gerade nicht aktualisiert werden. Du siehst den letzten bekannten Stand.</p>',
+        '          <p v-if="recommendations.length === 0">Gerade gibt es keine weiteren Plugins.</p>',
+        '          <div v-else class="mgd-kit-cards">',
+        '            <article v-for="item in recommendations" :key="item.slug" class="mgd-kit-card">',
+        '              <h3>{{ item.name }}</h3>',
+        '              <p>{{ item.description }}</p>',
+        '              <p v-if="item.version" class="mgd-kit-small">Version {{ item.version }}</p>',
+        '              <p><a :href="detailsUrl(item)" target="_blank" rel="noopener noreferrer">Mehr erfahren</a></p>',
+        '            </article>',
+        '          </div>',
+        '        </sw-card>',
+        '        <sw-card v-if="status.install" title="Installation melden">',
+        '          <sw-switch-field :label="status.install.label" :value="status.install.enabled" :disabled="isSaving" @update:value="setInstall" @change="setInstall"></sw-switch-field>',
+        '          <p class="mgd-kit-small">{{ status.install.hint }}</p>',
+        '          <p class="mgd-kit-small" role="status">{{ status.install.status }}</p>',
+        '        </sw-card>',
+        '        <sw-card v-if="status.license" title="Lizenz">',
+        '          <label :for="licenseId">Lizenzschlüssel</label>',
+        '          <input :id="licenseId" v-model="licenseToken" type="password" autocomplete="off" spellcheck="false">',
+        '          <p v-if="status.license.hasToken" class="mgd-kit-small">Eingetragen ist ein Schlüssel, der auf {{ status.license.hint }} endet.</p>',
+        '          <p role="status">{{ status.license.status }}</p>',
+        '          <p v-if="licenseMessage" role="status">{{ licenseMessage }}</p>',
+        '          <sw-button variant="primary" :disabled="isSaving" @click="saveLicense(\'save\')">Speichern</sw-button>',
+        '          <sw-button v-if="status.license.hasToken" :disabled="isSaving" @click="saveLicense(\'remove\')">Entfernen</sw-button>',
+        '          <p class="mgd-kit-small">Zur Prüfung gehen nur der Lizenzschlüssel und die Domain deines Shops an theme.michael-gahn.de.</p>',
+        '        </sw-card>',
+        '      </template>',
+        '    </sw-card-view>',
+        '  </template>',
+        '</sw-page>'
+    ].join('\n');
 
-    function startsWithAny(url, prefixes) {
-        return typeof url === 'string' && prefixes.some(function (prefix) {
-            return url.indexOf(prefix) === 0;
+    function isLink(url) {
+        return typeof url === 'string' && url.length < 500 && !/[\s"'<>\\]/.test(url) && LINK_PREFIXES.some(function (p) {
+            return url.indexOf(p) === 0;
         });
     }
 
-    Shopware.Locale.extend('de-DE', {
-        'mgd-barrierefrei-catalog': {
-            menuTitle: 'MGD Weitere Plugins',
-            description: 'Weitere kostenlose Plugins von Michael Gahn DESIGN',
-            title: 'Weitere Plugins von Michael Gahn DESIGN',
-            intro: 'Hier siehst du weitere Plugins für Shopware 6. Es wird nichts automatisch installiert. Zum Installieren lädst du das ZIP herunter und lädst es unter Erweiterungen > Meine Erweiterungen > Apps hoch.',
-            refresh: 'Liste aktualisieren',
-            loading: 'Liste wird geladen ...',
-            unavailable: 'Die Liste ist gerade nicht erreichbar. Dein Shop läuft ganz normal weiter. Versuche es später noch einmal.',
-            empty: 'Im Moment gibt es keine weiteren Plugins für Shopware 6.',
-            stale: 'Achtung: Die Liste konnte nicht neu geladen werden. Du siehst den letzten gespeicherten Stand.',
-            updatedAt: 'Stand der Liste:',
-            privacy: 'Datenschutz: Zum Laden der Liste verbindet sich dein Shop-Server mit theme.michael-gahn.de. Es werden keine Shop-, Kunden- oder Zugangsdaten gesendet, der Server sieht aber die IP-Adresse deines Shop-Servers. Der Katalog liefert derzeit keine Bilder. Falls er später welche liefert, lädt dein Browser sie nur auf dieser Admin-Seite von theme.michael-gahn.de; dann sieht der Server deine IP-Adresse. Besucher deines Shops sind nicht betroffen.',
-            recommended: 'Empfohlen',
-            free: 'Kostenlos',
-            paid: 'Kostenpflichtig',
-            announced: 'Demnächst',
-            version: 'Version',
-            download: 'ZIP herunterladen',
-            details: 'Mehr erfahren',
-            source: 'Quellcode auf GitHub',
-            newTab: '(öffnet in neuem Tab)'
+    // Kennung prüfen, Link immer selbst bauen
+    function detailsUrl(item) {
+        var slug = item && typeof item.slug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.slug) ? item.slug : '';
+
+        return 'https://theme.michael-gahn.de/plugins/' + slug;
+    }
+
+    function addStyle(doc) {
+        if (!doc || doc.getElementById(STYLE_ID)) {
+            return;
         }
-    });
+        var el = doc.createElement('style');
+        el.id = STYLE_ID;
+        el.textContent = STYLE;
+        doc.head.appendChild(el);
+    }
 
-    Shopware.Locale.extend('en-GB', {
-        'mgd-barrierefrei-catalog': {
-            menuTitle: 'MGD more plugins',
-            description: 'More free plugins by Michael Gahn DESIGN',
-            title: 'More plugins by Michael Gahn DESIGN',
-            intro: 'Here you can see more plugins for Shopware 6. Nothing is installed automatically. To install one, download the ZIP and upload it under Extensions > My extensions > Apps.',
-            refresh: 'Refresh list',
-            loading: 'Loading list ...',
-            unavailable: 'The list is not reachable right now. Your shop keeps running as usual. Please try again later.',
-            empty: 'There are no more plugins for Shopware 6 at the moment.',
-            stale: 'Note: The list could not be refreshed. You see the last saved state.',
-            updatedAt: 'List updated:',
-            privacy: 'Privacy: To load the list, your shop server connects to theme.michael-gahn.de. No shop, customer or login data is sent, but the server sees the IP address of your shop server. The catalog currently provides no images. If it provides some later, your browser loads them on this admin page only, from theme.michael-gahn.de; the server then sees your IP address. Visitors of your shop are not affected.',
-            recommended: 'Recommended',
-            free: 'Free',
-            paid: 'Paid',
-            announced: 'Coming soon',
-            version: 'Version',
-            download: 'Download ZIP',
-            details: 'Learn more',
-            source: 'Source code on GitHub',
-            newTab: '(opens in a new tab)'
-        }
-    });
-
-    Shopware.Component.register('mgd-barrierefrei-catalog-page', {
-        template: [
-            '<sw-page class="mgd-barrierefrei-catalog">',
-            '  <template #smart-bar-header><h2>{{ $tc("mgd-barrierefrei-catalog.title") }}</h2></template>',
-            '  <template #smart-bar-actions>',
-            '    <sw-button :disabled="isLoading" @click="load(true)">{{ $tc("mgd-barrierefrei-catalog.refresh") }}</sw-button>',
-            '  </template>',
-            '  <template #content>',
-            '    <sw-card-view>',
-            '      <sw-card :title="$tc(\'mgd-barrierefrei-catalog.title\')">',
-            '        <p class="mgd-cat-intro">{{ $tc("mgd-barrierefrei-catalog.intro") }}</p>',
-            '        <p v-if="isLoading" role="status">{{ $tc("mgd-barrierefrei-catalog.loading") }}</p>',
-            '        <p v-else-if="!available" class="mgd-cat-empty" role="status">{{ $tc("mgd-barrierefrei-catalog.unavailable") }}</p>',
-            '        <template v-else>',
-            '          <p v-if="stale" class="mgd-cat-empty" role="status">{{ $tc("mgd-barrierefrei-catalog.stale") }}</p>',
-            '          <p v-if="items.length === 0" class="mgd-cat-empty">{{ $tc("mgd-barrierefrei-catalog.empty") }}</p>',
-            '          <div v-else class="mgd-cat-grid">',
-            '            <article v-for="item in items" :key="item.id" class="mgd-cat-item" :style="accentStyle(item)">',
-            '              <img v-if="isImage(item.imageUrl)" class="mgd-cat-image" :src="item.imageUrl" :alt="item.imageAlt" loading="lazy" referrerpolicy="no-referrer">',
-            '              <div class="mgd-cat-head">',
-            '                <img v-if="isImage(item.iconUrl)" class="mgd-cat-icon" :src="item.iconUrl" alt="" width="36" height="36" loading="lazy" referrerpolicy="no-referrer">',
-            '                <span v-else class="mgd-cat-icon mgd-cat-icon--fallback" aria-hidden="true">{{ item.name.charAt(0) }}</span>',
-            '                <h3>{{ item.name }}</h3>',
-            '              </div>',
-            '              <ul class="mgd-cat-badges">',
-            '                <li v-if="item.recommended" class="mgd-cat-badge mgd-cat-badge--rec">{{ $tc("mgd-barrierefrei-catalog.recommended") }}</li>',
-            '                <li class="mgd-cat-badge">{{ item.tier === "free" ? $tc("mgd-barrierefrei-catalog.free") : $tc("mgd-barrierefrei-catalog.paid") }}</li>',
-            '                <li v-if="item.status === \'announced\'" class="mgd-cat-badge">{{ $tc("mgd-barrierefrei-catalog.announced") }}</li>',
-            '                <li v-if="item.version" class="mgd-cat-badge">{{ $tc("mgd-barrierefrei-catalog.version") }} {{ item.version }}</li>',
-            '              </ul>',
-            '              <p class="mgd-cat-text">{{ item.description }}</p>',
-            '              <p class="mgd-cat-links">',
-            '                <a v-if="isLink(item.downloadUrl)" :href="item.downloadUrl" target="_blank" rel="noopener noreferrer">{{ $tc("mgd-barrierefrei-catalog.download") }} <span class="sr-only">{{ $tc("mgd-barrierefrei-catalog.newTab") }}</span></a>',
-            '                <a v-if="isLink(item.detailsUrl)" :href="item.detailsUrl" target="_blank" rel="noopener noreferrer">{{ $tc("mgd-barrierefrei-catalog.details") }} <span class="sr-only">{{ $tc("mgd-barrierefrei-catalog.newTab") }}</span></a>',
-            '                <a v-if="isLink(item.repositoryUrl)" :href="item.repositoryUrl" target="_blank" rel="noopener noreferrer">{{ $tc("mgd-barrierefrei-catalog.source") }} <span class="sr-only">{{ $tc("mgd-barrierefrei-catalog.newTab") }}</span></a>',
-            '              </p>',
-            '            </article>',
-            '          </div>',
-            '          <p v-if="updatedText" class="mgd-cat-note">{{ $tc("mgd-barrierefrei-catalog.updatedAt") }} {{ updatedText }}</p>',
-            '        </template>',
-            '        <p class="mgd-cat-note">{{ $tc("mgd-barrierefrei-catalog.privacy") }}</p>',
-            '      </sw-card>',
-            '    </sw-card-view>',
-            '  </template>',
-            '</sw-page>'
-        ].join('\n'),
-
-        inject: ['loginService'],
-
+    var component = {
+        template: TEMPLATE,
+        inject: ['loginService', 'acl'],
         data: function () {
-            return { isLoading: true, available: false, stale: false, items: [], fetchedAt: null };
+            return {
+                isLoading: true, loadError: false, isUpdating: false, isSaving: false,
+                status: {}, recommendations: [], recStale: false,
+                message: '', messageOk: false, fallback: null,
+                licenseToken: '', licenseMessage: ''
+            };
         },
-
         computed: {
-            updatedText: function () {
-                if (!this.fetchedAt) {
-                    return '';
-                }
-                var locale = Shopware.State.get('session').currentLocale || 'de-DE';
+            title: function () {
+                return 'MGD Barrierefrei';
+            },
+            updates: function () {
+                return this.status.updates || {};
+            },
+            steps: function () {
+                var s = this.fallback && Array.isArray(this.fallback.steps) ? this.fallback.steps : this.status.fallbackSteps;
 
-                return new Date(this.fetchedAt * 1000).toLocaleString(locale);
+                return Array.isArray(s) ? s : [];
+            },
+            downloadLink: function () {
+                return this.fallback && this.fallback.url ? this.fallback.url : this.updates.downloadUrl;
+            },
+            licenseId: function () {
+                return MODULE + '-license';
             }
         },
-
         created: function () {
-            addStyle();
-            this.load(false);
+            addStyle(root.document);
+            this.load();
         },
-
         methods: {
-            // Feed holen, Fehler zeigen wir nur als Hinweis
-            load: function (refresh) {
+            isLink: isLink,
+            detailsUrl: detailsUrl,
+            http: function () {
+                return Shopware.Application.getContainer('init').httpClient;
+            },
+            opts: function () {
+                return { headers: { Authorization: 'Bearer ' + this.loginService.getToken(), 'Content-Type': 'application/json' } };
+            },
+            load: function () {
                 var vm = this;
-                var client = Shopware.Application.getContainer('init').httpClient;
                 vm.isLoading = true;
 
-                return client.post('/_action/mgd-barrierefrei/catalog', { refresh: refresh === true }, {
-                    headers: { Authorization: 'Bearer ' + vm.loginService.getToken(), 'Content-Type': 'application/json' }
-                }).then(function (response) {
-                    var data = response && response.data ? response.data : {};
-                    vm.available = data.available === true && Array.isArray(data.items);
-                    vm.items = vm.available ? data.items : [];
-                    vm.stale = data.stale === true;
-                    vm.fetchedAt = typeof data.fetchedAt === 'number' ? data.fetchedAt : null;
+                return vm.http().get(API + '/status', vm.opts()).then(function (r) {
+                    vm.status = r && r.data ? r.data : {};
+                    vm.loadError = false;
+
+                    return vm.http().get(API + '/recommendations', vm.opts()).then(function (r2) {
+                        var d = r2 && r2.data ? r2.data : {};
+                        vm.recommendations = Array.isArray(d.items) ? d.items : [];
+                        vm.recStale = d.source === 'stale' || d.source === 'fallback';
+                    }).catch(function () {
+                        vm.recommendations = [];
+                        vm.recStale = true;
+                    });
                 }).catch(function () {
-                    vm.available = false;
-                    vm.items = [];
+                    vm.loadError = true;
                 }).then(function () {
                     vm.isLoading = false;
                 });
             },
+            // 2 Schritte: einspielen, dann eigener Aufruf fürs Shopware-Update (neuer Code geladen)
+            runUpdate: function () {
+                var vm = this;
+                if (vm.isUpdating || !PLUGIN_PRIVS.every(function (p) { return vm.acl.can(p); })) {
+                    return null;
+                }
+                vm.isUpdating = true;
+                vm.message = '';
+                vm.fallback = null;
 
-            isLink: function (url) {
-                return startsWithAny(url, LINK_PREFIXES);
+                return vm.http().post(API + '/update', {}, vm.opts()).then(function (r) {
+                    var d = r && r.data ? r.data : {};
+                    if (d.ok === true && d.step === 'uploaded') {
+                        vm.show(d);
+
+                        return vm.http().post(API + '/update/finish', {}, vm.opts()).then(function (r2) {
+                            vm.show(r2 && r2.data ? r2.data : {});
+                        });
+                    }
+                    vm.show(d);
+
+                    return null;
+                }).catch(function (e) {
+                    vm.show(e && e.response && e.response.data ? e.response.data : {});
+                }).then(function () {
+                    vm.isUpdating = false;
+                });
             },
-
-            isImage: function (url) {
-                return typeof url === 'string' && url.indexOf(IMAGE_PREFIX) === 0;
+            show: function (d) {
+                this.messageOk = d.ok === true;
+                this.message = typeof d.message === 'string' ? d.message : 'Das Update hat nicht geklappt.';
+                this.fallback = d.ok === true ? null : (d.fallback || { url: this.updates.downloadUrl, steps: this.status.fallbackSteps });
             },
+            // 6.5 schickt change, ab 6.6 update:value > doppelt abfangen
+            setInstall: function (on) {
+                var vm = this;
+                if (typeof on !== 'boolean' || !vm.status.install || on === vm.status.install.enabled || vm.isSaving) {
+                    return null;
+                }
+                vm.isSaving = true;
 
-            // Farbe nur wenn genau #rrggbb, als CSS-Variable (nur für den Rand, Text bleibt dunkel)
-            accentStyle: function (item) {
-                return typeof item.accent === 'string' && /^#[0-9a-f]{6}$/.test(item.accent) ? { '--mgd-accent': item.accent } : null;
+                return vm.http().post(API + '/install-report', { enabled: on }, vm.opts()).then(function (r) {
+                    if (r && r.data && r.data.install) {
+                        vm.status.install = r.data.install;
+                    }
+                }).catch(function () {
+                    vm.status.install = Object.assign({}, vm.status.install, { status: 'Das Speichern hat nicht geklappt.' });
+                }).then(function () {
+                    vm.isSaving = false;
+                });
+            },
+            saveLicense: function (action) {
+                var vm = this;
+                vm.isSaving = true;
+
+                return vm.http().post(API + '/license', { action: action, token: action === 'save' ? vm.licenseToken : '' }, vm.opts()).then(function (r) {
+                    var d = r && r.data ? r.data : {};
+                    vm.licenseMessage = d.message || '';
+                    if (d.license) {
+                        vm.status.license = d.license;
+                    }
+                }).catch(function (e) {
+                    var d = e && e.response && e.response.data ? e.response.data : {};
+                    vm.licenseMessage = d.message || 'Das hat nicht geklappt.';
+                }).then(function () {
+                    vm.licenseToken = '';
+                    vm.isSaving = false;
+                });
             }
         }
-    });
+    };
 
-    Shopware.Module.register('mgd-barrierefrei-catalog', {
+    var api = { PRODUCT: PRODUCT, MODULE: MODULE, isLink: isLink, detailsUrl: detailsUrl, component: component };
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = api;
+    }
+    if (typeof Shopware === 'undefined') {
+        return;
+    }
+
+    Shopware.Component.register(MODULE + '-page', component);
+    Shopware.Module.register(MODULE, {
         type: 'plugin',
-        name: 'mgd-barrierefrei-catalog',
-        title: 'mgd-barrierefrei-catalog.menuTitle',
-        description: 'mgd-barrierefrei-catalog.description',
-        color: '#b91c1c',
+        name: MODULE,
+        title: 'MGD Barrierefrei',
+        description: 'Updates, weitere Plugins und Einstellungen',
+        color: '#1f2d3d',
         icon: 'regular-cog',
-
         routes: {
-            index: {
-                component: 'mgd-barrierefrei-catalog-page',
-                path: 'index',
-                meta: { parentPath: 'sw.settings.index.plugins', privilege: 'system_config:read' }
-            }
+            index: { component: MODULE + '-page', path: 'index', meta: { parentPath: 'sw.settings.index.plugins', privilege: 'system_config:read' } }
         },
-
         // Einstellungen > Erweiterungen
         settingsItem: [{
-            name: 'mgd-barrierefrei-catalog',
-            to: 'mgd.barrierefrei.catalog.index',
-            label: 'mgd-barrierefrei-catalog.menuTitle',
+            name: MODULE,
+            to: MODULE.replace(/-/g, '.') + '.index',
+            label: 'MGD Barrierefrei',
             group: 'plugins',
             icon: 'regular-cog',
             privilege: 'system_config:read'
         }]
     });
-})();
+})(typeof window !== 'undefined' ? window : this);

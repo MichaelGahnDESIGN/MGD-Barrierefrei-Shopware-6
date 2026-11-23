@@ -2,27 +2,12 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <!-- Baukasten aus MichaThemeV5-Pro > src/Kit (bin/build-plugin-kit.php) - Info, Updates, Weitere Plugins, Installation melden -->
+    <imports>
+        <import resource="../../Kit/Platform/Shopware/Resources/config/services.xml"/>
+    </imports>
     <services>
-        <!-- Eigene Dienste bleiben klein; die Shopware-Konfiguration ist die einzige Datenquelle. -->
-        <service id="MgdBarrierefrei\Update\GitHubReleaseChecker"/>
-        <service id="MgdBarrierefrei\Administration\Controller\UpdateController" public="true">
-            <argument type="service" id="MgdBarrierefrei\Update\GitHubReleaseChecker"/>
-        </service>
-        <!-- Weitere Plugins: Feed von theme.michael-gahn.de, nur Admin -->
-        <service id="MgdBarrierefrei\Catalog\PsrCatalogCache">
-            <argument type="service" id="cache.object"/>
-        </service>
-        <service id="MgdBarrierefrei\Catalog\FeedNormalizer">
-            <argument type="collection"><argument>shopware</argument><argument>shopware6</argument></argument>
-            <argument>plugin-barrierefrei-shopware</argument>
-        </service>
-        <service id="MgdBarrierefrei\Catalog\PluginCatalog">
-            <argument type="service" id="MgdBarrierefrei\Catalog\PsrCatalogCache"/>
-            <argument type="service" id="MgdBarrierefrei\Catalog\FeedNormalizer"/>
-        </service>
-        <service id="MgdBarrierefrei\Administration\Controller\CatalogController" public="true">
-            <argument type="service" id="MgdBarrierefrei\Catalog\PluginCatalog"/>
-        </service>
+        <!-- alter GitHub-Update-Check + alte Liste Weitere Plugins nicht mehr angemeldet, löschen in der Endversion -->
         <service id="MgdBarrierefrei\Storefront\AccessibilityController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
         </service>

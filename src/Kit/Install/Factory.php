@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MgdBarrierefrei\Install;
+namespace MgdBarrierefrei\Kit\Install;
 
 // Baut den Client mit cURL. Store je System: JsonFileStore (JTL), CallbackStore (WP-Option, Shopware SystemConfig)
 final class Factory

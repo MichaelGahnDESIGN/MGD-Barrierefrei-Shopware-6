@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MgdBarrierefrei\Install;
+namespace MgdBarrierefrei\Kit\Install;
 
 // Zustand als JSON-Datei im Plugin-Datenordner (atomar, nur Besitzer)
 final class JsonFileStore implements Store

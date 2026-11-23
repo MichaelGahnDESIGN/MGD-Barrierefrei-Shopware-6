@@ -3,7 +3,7 @@
   "description": "Barrierefreie Bedienhilfen und eine konfigurierbare Erklärung zur Barrierefreiheit für Shopware 6. Meldet sich höchstens einmal am Tag bei theme.michael-gahn.de (Plugin, Version, Shopsystem, Domain, zufällige ID). Abschaltbar in den Einstellungen.",
   "type": "shopware-platform-plugin",
   "license": "GPL-2.0-or-later",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "authors": [{"name": "Michael Gahn DESIGN", "homepage": "https://michael-gahn.de"}],
   "require": {
     "php": "^8.2",
@@ -23,7 +23,7 @@
     "plugin-icon": "src/Resources/config/plugin.svg"
   },
   "scripts": {
-    "check:php": ["composer validate --strict", "find src -name '*.php' -print0 | xargs -0 -n1 php -l", "php tests/catalog-check.php", "php tests/install-report.php", "sh scripts/build-storefront.sh --check"],
+    "check:php": ["composer validate --strict", "find src -name '*.php' -print0 | xargs -0 -n1 php -l", "php tests/kit-check.php", "php tests/install-report.php", "sh scripts/build-storefront.sh --check"],
     "build:storefront": "sh scripts/build-storefront.sh",
     "build:release": "sh scripts/build-release.sh"
   },

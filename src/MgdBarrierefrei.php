@@ -9,6 +9,7 @@ use MgdBarrierefrei\InstallReport\InstallReporter;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
@@ -32,6 +33,13 @@ final class MgdBarrierefrei extends Plugin
     {
         parent::postUpdate($updateContext);
         $this->report();
+    }
+
+    // Deinstallieren: bei theme.michael-gahn.de abmelden, Kit-Daten nur bei "Daten löschen" weg
+    public function uninstall(UninstallContext $uninstallContext): void
+    {
+        parent::uninstall($uninstallContext);
+        \MgdBarrierefrei\Kit\Platform\Shopware\ShopwareKit::forUninstall($uninstallContext, $this->container->get(SystemConfigService::class), 'mgd-barrierefrei-shopware')?->uninstall($uninstallContext);
     }
 
     // Lifecycle darf nie scheitern
