@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "platform": "shopware6",
+  "icon": "src/Resources/config/plugin.svg",
+  "readme": "README.md",
+  "changelog": "CHANGELOG.md"
+}

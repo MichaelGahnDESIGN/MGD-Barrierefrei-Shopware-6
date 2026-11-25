@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.1] - 2026-11-25
+
+- Aktueller Baukasten, einheitliche Version.
+
 ## 1.6.1 – 2026-11-24
 
 - **Neue Ansicht „Weitere Plugins“** auf der Seite „MGD Barrierefrei“: mit Bildern, Kategorien, Suche, Preis-Filter und einem Fenster „Details“, im Design der „MGD Plugin-Kollektion“.

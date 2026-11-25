@@ -32,7 +32,11 @@ final class MgdBarrierefrei extends Plugin
     public function postUpdate(UpdateContext $updateContext): void
     {
         parent::postUpdate($updateContext);
-        $this->report();
+        // Meldung über den Baukasten (reportNow = ping(true)), Lifecycle darf nie scheitern
+        try {
+            \MgdBarrierefrei\Kit\Platform\Shopware\ShopwareKit::forLifecycle($updateContext, $this->container->get(SystemConfigService::class), 'mgd-barrierefrei-shopware')?->reportNow();
+        } catch (\Throwable) {
+        }
     }
 
     // Deinstallieren: bei theme.michael-gahn.de abmelden, Kit-Daten nur bei "Daten löschen" weg

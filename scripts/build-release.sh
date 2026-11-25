@@ -12,6 +12,10 @@ output="release/${root}-${version}.zip"
 mkdir -p release "$stage/$root"
 cp composer.json LICENSE README.md SECURITY.md CHANGELOG.md "$stage/$root/"
 cp -R src docs "$stage/$root/"
+# Rechte 644/755 (Netzlaufwerk liefert 700 > 403 bei Icons), keine Punkt-Dateien
+find "$stage" \( -name '.DS_Store' -o -name '.smbdelete*' \) -delete
+find "$stage/$root" -type d -exec chmod 755 {} +
+find "$stage/$root" -type f -exec chmod 644 {} +
 (cd "$stage" && zip -qr "$project/$output" "$root" -x '*/.DS_Store')
 # dist muss im ZIP liegen
 unzip -l "$output" | grep -q "storefront/dist/storefront/js/mgd-barrierefrei/mgd-barrierefrei.js" || { echo "dist fehlt im ZIP" >&2; exit 1; }
